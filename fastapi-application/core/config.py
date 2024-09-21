@@ -1,30 +1,33 @@
-from pydantic import BaseModel
-from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import PostgresDsn
+from dotenv import load_dotenv
+import os
+from typing import Optional
 
+load_dotenv()
 
-class RunConfig(BaseModel):
-    host: str = "127.0.0.1"
-    port: int = 8000
+# Получение переменных окружения
+DB_NAME = os.environ.get("DB_NAME")
+DB_USER = os.environ.get("DB_USER")
+DB_PASS = os.environ.get("DB_PASS")
+DB_PORT = os.environ.get("DB_PORT")
+DB_HOST = os.environ.get("DB_HOST")
 
-class DataBaseSettings(BaseModel):
-    url: PostgresDsn
-    echo: bool = False 
-    echo_pool: bool = False
-    max_overflow: int = 10 
-    pool_size: int = 50
+required_vars = ["DB_NAME", "DB_USER", "DB_PASS", "DB_PORT", "DB_HOST"]
+for var in required_vars:
+    if not os.environ.get(var):
+        raise ValueError(f"Environment variable {var} is not set")
 
-class Settings(BaseSettings):
-    modelConfig: SettingsConfigDict = SettingsConfigDict(
-        case_sensitive=False,
-        env_nested_delimiter="__",
-        env_prefix="FASTAPI__",
-        env_file=".env"
-    )
-    runConfig: RunConfig = RunConfig()
-    db: DataBaseSettings
+class RunConfig:
+    def __init__(self, host: str = "0.0.0.0", port: int = 8000) -> None:
+        self.host: str = host
+        self.port: int = port
+
+class Settings:
+    def __init__(self) -> None:
+        self.run: RunConfig = RunConfig()
+        self.db_name: str = DB_NAME
+        self.db_user: str = DB_USER
+        self.db_pass: str = DB_PASS
+        self.db_port: str = DB_PORT
+        self.db_host: str = DB_HOST
 
 settings = Settings()
-
-
-
