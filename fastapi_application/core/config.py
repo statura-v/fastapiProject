@@ -1,10 +1,8 @@
 from dotenv import load_dotenv
 import os
-from typing import Optional
 
 load_dotenv()
 
-# Получение переменных окружения
 DB_NAME = os.environ.get("DB_NAME")
 DB_USER = os.environ.get("DB_USER")
 DB_PASS = os.environ.get("DB_PASS")
@@ -24,6 +22,7 @@ class RunConfig:
 class Settings:
     def __init__(self) -> None:
         self.run: RunConfig = RunConfig()
+
         self.db_name: str = DB_NAME
         self.db_user: str = DB_USER
         self.db_pass: str = DB_PASS
