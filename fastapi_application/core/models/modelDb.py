@@ -24,6 +24,10 @@ home_users = Table('home_users', Base.metadata,
                    Column("user_id", Integer, ForeignKey("user.id")), 
                    Column("home_id", Integer, ForeignKey("home.id")))
 
+role_users = Table('role_users', Base.metadata,
+                   Column("user_id", Integer, ForeignKey("user.id")),
+                   Column("role_id", Integer, ForeignKey("role.id")))
+
 
 class User(Base):
     __tablename__= "user"
@@ -38,8 +42,8 @@ class User(Base):
 
     role_id: Mapped[int] = mapped_column(Integer, ForeignKey('role.id'))
 
-    role: Mapped['Role'] = relationship("Role", uselist=False, back_populates="user")
     homes: Mapped[List['Home']] = relationship(secondary=home_users)
+    roles: Mapped[List['Role']] = relationship(secondary=role_users)
 
 
 class Role(Base):
@@ -50,7 +54,7 @@ class Role(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     role_name: Mapped[str] = mapped_column(String(256))
 
-    users: Mapped[List['User']] = relationship("User", back_populates="role")
+    users: Mapped[List['User']] = relationship(secondary=role_users)
 
 
 class Home(Base):
@@ -60,6 +64,8 @@ class Home(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     home_name: Mapped[str] = mapped_column(String(256))
+    addres: Mapped[str] = mapped_column(String(256), nullable=True)
+
     users: Mapped[List['User']] = relationship(secondary=home_users)
 
 
