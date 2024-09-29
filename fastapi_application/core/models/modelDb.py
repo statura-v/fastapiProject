@@ -20,11 +20,13 @@ class Base(DeclarativeBase):
     updated_at = mapped_column(DateTime)
 
 
-home_users = Table('home_users', Base.metadata, 
+home_users = Table('home_users', Base.metadata,
+                   Column("id", Integer, autoincrement=True, index=True), 
                    Column("user_id", Integer, ForeignKey("user.id")), 
                    Column("home_id", Integer, ForeignKey("home.id")))
 
 role_users = Table('role_users', Base.metadata,
+                   Column("id", Integer, autoincrement=True, index=True), 
                    Column("user_id", Integer, ForeignKey("user.id")),
                    Column("role_id", Integer, ForeignKey("role.id")))
 
