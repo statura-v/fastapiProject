@@ -1,8 +1,8 @@
-"""create full model Database
+"""new DaraBase
 
-Revision ID: e062594004f7
+Revision ID: 124f460fe357
 Revises: 
-Create Date: 2024-09-29 20:11:56.695041
+Create Date: 2024-10-03 10:11:42.421342
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e062594004f7'
+revision: str = '124f460fe357'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -67,10 +67,8 @@ def upgrade() -> None:
     sa.Column('last_name', sa.String(length=256), nullable=False),
     sa.Column('number_telephone', sa.String(length=256), nullable=False),
     sa.Column('email', sa.String(length=256), nullable=False),
-    sa.Column('role_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('execution_device',

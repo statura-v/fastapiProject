@@ -52,7 +52,6 @@ class User(Base):
     last_name: Mapped[str] = mapped_column(String(256))
     number_telephone: Mapped[str] = mapped_column(String(256))
     email: Mapped[str] = mapped_column(String(256))
-    role_id: Mapped[int] = mapped_column(Integer, ForeignKey('role.id'))
 
     homes: Mapped[List['Home']] = relationship(secondary=home_users)
     roles: Mapped[List['Role']] = relationship(secondary=role_users)
