@@ -1,8 +1,8 @@
-"""new DaraBase
+"""new DataBase
 
-Revision ID: 124f460fe357
+Revision ID: c00b596d1905
 Revises: 
-Create Date: 2024-10-03 10:11:42.421342
+Create Date: 2024-10-03 17:14:17.073712
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '124f460fe357'
+revision: str = 'c00b596d1905'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -78,8 +78,10 @@ def upgrade() -> None:
     sa.Column('addres', sa.String(length=256), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('type_id', sa.Integer(), nullable=False),
+    sa.Column('home_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['home_id'], ['home.id'], ),
     sa.ForeignKeyConstraint(['type_id'], ['device_type.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -99,8 +101,10 @@ def upgrade() -> None:
     sa.Column('addres', sa.String(length=256), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('type_id', sa.Integer(), nullable=False),
+    sa.Column('home_id', sa.Integer(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.ForeignKeyConstraint(['home_id'], ['home.id'], ),
     sa.ForeignKeyConstraint(['type_id'], ['device_type.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')

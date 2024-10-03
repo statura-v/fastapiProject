@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from core.dbHelp import db
 from core.models.modelDb import User
-from core.schemas.user_schemas import UserCreate
+from core.schemas.user_schemas import UserCreate, UserUpdate
 
 
 def get_user_by_id(database: Session, user_id: int):
@@ -25,3 +25,11 @@ def create_user(database: Session, schema: UserCreate):
     database.add(user)
     database.commit()
     return {"Status" : 200}
+
+def update_user(database: Session, schema: UserUpdate, user_id: int):
+    user = database.query(User).get(user_id)
+    user.first_name = schema.first_name
+    #добисать все поля. 
+    database.commit()
+    database.refresh(user)
+    return {'Status': 200}

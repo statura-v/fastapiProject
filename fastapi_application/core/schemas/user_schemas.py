@@ -11,3 +11,6 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     pass
 
+
+class UserUpdate(UserBase):
+    id: int

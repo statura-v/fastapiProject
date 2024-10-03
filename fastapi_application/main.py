@@ -1,9 +1,18 @@
 import uvicorn
 from fastapi import FastAPI
+from sqlalchemy.orm import Session
+from core import session_local
 from core.config import settings
-from core.models import db
 
 app = FastAPI()
+
+def get_db():
+    db = session_local()
+    try:
+        yield db    #почему ?
+    finally:
+        db.close()
+
 
 if __name__ == "__main__":
     uvicorn.run(app="main:app", reload=True, 
