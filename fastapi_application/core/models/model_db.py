@@ -65,6 +65,7 @@ class Role(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     role_name: Mapped[str] = mapped_column(String(256))
+    description: Mapped[str] = mapped_column(Text, nullable=True)
 
     users: Mapped[List['User']] = relationship(secondary=role_users)
 

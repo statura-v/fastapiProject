@@ -10,9 +10,12 @@ def get_user_by_id(database: Session, user_id: int):
 
 def delete_user_by_id(database: Session, user_id: int):
     user = database.query(User).get(user_id)
+    if not user:
+        return {'Status': 404, 'Message': 'User not found'}
+    
     database.delete(user)
     database.commit()
-    return {'Status': 200}
+    return {'Status': 200, "Message": "User has beeb deleted"}
 
 
 def create_user(database: Session, schema: UserCreate): 
@@ -24,12 +27,21 @@ def create_user(database: Session, schema: UserCreate):
                 )
     database.add(user)
     database.commit()
-    return {"Status" : 200}
+    return {"Status" : 200, "Message": "Success"}
+
+
 
 def update_user(database: Session, schema: UserUpdate, user_id: int):
     user = database.query(User).get(user_id)
+    if not user:
+        return {'Status': 404, 'Message': 'User not found'}
+
     user.first_name = schema.first_name
-    #добисать все поля. 
+    user.last_name = schema.last_name
+    user.email = schema.email
+    user.hashed_password = schema.hashed_password
+    user.number_telephone = schema.number_telephone
+    
     database.commit()
     database.refresh(user)
-    return {'Status': 200}
+    return {'Status': 200, 'Message': 'User updated successfully'}
