@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from core.dbHelp import db
-from core.models.modelDb import User
+from fastapi_application.core.db_help import db
+from fastapi_application.core.models.model_db import User
 from core.schemas.user_schemas import UserCreate, UserUpdate
 
 
