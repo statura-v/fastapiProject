@@ -1,25 +1,26 @@
-from fastapi_application.core.config import settings
-# from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-# from sqlalchemy.orm import sessionmaker
-# from typing import AsyncGenerator
-
-
-# # class BaseDatabaseConnector:
-# #     def __init__(self, database_url: str):
-# #         self.engine = create_async_engine(database_url, echo=True)
-# #         self.async_session_maker = sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
-    
-# #     async def get_async_session(self) -> AsyncGenerator[AsyncSession, None]:
-# #         async with self.async_session_maker() as session:
-# #             yield session
-
-# # db = BaseDatabaseConnector(database_url=DATABASE_URL)
-
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+from core.config import settings
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-DATABASE_URL = f'postgresql+psycopg2://{str(settings.db_user)}:{str(settings.db_pass)}@{str(settings.db_host)}:{str(settings.db_port)}/{str(settings.db_name)}'
+from typing import AsyncGenerator
 
-engine = create_engine(DATABASE_URL)
-session_local = sessionmaker(bind=engine)
-base = declarative_base()
+DATABASE_URL = f'postgresql+asyncpg://{str(settings.db_user)}:{str(settings.db_pass)}@{str(settings.db_host)}:{str(settings.db_port)}/{str(settings.db_name)}'
+
+class BaseDatabaseConnector:
+    def __init__(self, database_url: str):
+        self.engine = create_async_engine(database_url, echo=True)
+        self.async_session_maker = sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
+    
+    async def get_async_session(self) -> AsyncGenerator[AsyncSession, None]:
+        async with self.async_session_maker() as session:
+            yield session
+
+db = BaseDatabaseConnector(database_url=DATABASE_URL)
+
+# from sqlalchemy import create_engine
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.orm import sessionmaker
+# DATABASE_URL = f'postgresql+psycopg2://{str(settings.db_user)}:{str(settings.db_pass)}@{str(settings.db_host)}:{str(settings.db_port)}/{str(settings.db_name)}'
+
+# engine = create_engine(DATABASE_URL)
+# session_local = sessionmaker(bind=engine)
+# base = declarative_base()
