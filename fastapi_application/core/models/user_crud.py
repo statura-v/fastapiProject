@@ -46,13 +46,13 @@ from sqlalchemy import update, delete, select, insert
 from core.models.model_db import User
 from core.schemas.user_schemas import UserCreate, UserUpdate
 
-async def get_user_by_id(database: AsyncSession, user_id: int):
-    result = await database.execute(select(User).where(User.id == user_id))
+async def get_user_by_id(session: AsyncSession, user_id: int):
+    result = await session.execute(select(User).where(User.id == user_id))
     return result.scalar_one_or_none()
 
-async def delete_user_by_id(database: AsyncSession, user_id: int):
-    result = await database.execute(delete(User).where(User.id == user_id))
-    await database.commit()
+async def delete_user_by_id(session: AsyncSession, user_id: int):
+    result = await session.execute(delete(User).where(User.id == user_id))
+    await session.commit()
     return result.rowcount > 0
 
 async def create_user(session: AsyncSession, schema: UserCreate):
@@ -62,11 +62,11 @@ async def create_user(session: AsyncSession, schema: UserCreate):
     return {"Status": 200}
 
 
-async def update_user(database: AsyncSession, schema: UserUpdate, user_id: int):
-    result = await database.execute(
+async def update_user(session: AsyncSession, schema: UserUpdate, user_id: int):
+    result = await session.execute(
         update(User)
         .where(User.id == user_id)
         .values(**schema.dict())
     )
-    await database.commit()
+    await session.commit()
     return result.rowcount > 0
