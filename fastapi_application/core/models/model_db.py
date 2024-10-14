@@ -40,8 +40,8 @@ class User(Base):
     number_telephone: Mapped[str] = mapped_column(String(256))
     email: Mapped[str] = mapped_column(String(256))
 
-    homes: Mapped[List['Home']] = relationship("Home", secondary=home_users, overlaps="users")
-    roles: Mapped[List['Role']] = relationship("Role", secondary=role_users, overlaps="roles")
+    homes: Mapped[List['Home']] = relationship("Home", secondary=home_users)
+    roles: Mapped[List['Role']] = relationship("Role", secondary=role_users)
 
 class Role(Base):
     __tablename__ = "role"
@@ -52,7 +52,7 @@ class Role(Base):
     role_name: Mapped[str] = mapped_column(String(256))
     description: Mapped[str] = mapped_column(Text, nullable=True)
 
-    users: Mapped[List['User']] = relationship("User", secondary=role_users, overlaps="roles")
+    users: Mapped[List['User']] = relationship("User", secondary=role_users)
 
 class Home(Base):
     __tablename__ = "home"
@@ -65,7 +65,7 @@ class Home(Base):
 
     returnDevices: Mapped[List['ReturnDevice']] = relationship("ReturnDevice", back_populates="home")
     executionDevices: Mapped[List['ExecutionDevice']] = relationship("ExecutionDevice", back_populates="home")
-    users: Mapped[List['User']] = relationship("User", secondary=home_users, overlaps="homes")
+    users: Mapped[List['User']] = relationship("User", secondary=home_users)
 
 class DeviceType(Base):
     __tablename__ = "device_type"
@@ -75,8 +75,8 @@ class DeviceType(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(128))
     description: Mapped[str] = mapped_column(Text)
-    returnDevices: Mapped[List['ReturnDevice']] = relationship("ReturnDevice", back_populates="deviceType")
-    executionDevices: Mapped[List['ExecutionDevice']] = relationship("ExecutionDevice", back_populates="deviceType")
+    returnDevices: Mapped[List['ReturnDevice']] = relationship("ReturnDevice", back_populates="device_type")
+    executionDevices: Mapped[List['ExecutionDevice']] = relationship("ExecutionDevice", back_populates="device_type")
 
 class ReturnDevice(Base):
     __tablename__ = "return_device"
@@ -91,10 +91,10 @@ class ReturnDevice(Base):
     type_id: Mapped[int] = mapped_column(Integer, ForeignKey("device_type.id"))
     home_id: Mapped[int] = mapped_column(Integer, ForeignKey("home.id"))
 
-    home: Mapped[Home] = relationship("Home", back_populates="returnDevices") 
-    deviceType: Mapped[DeviceType] = relationship("DeviceType", back_populates="returnDevices")
-    commands: Mapped[List["Command"]] = relationship(secondary=command_devices, overlaps="returnDevices")
-    returnResults: Mapped[List["DeviceValueFormat"]] = relationship(secondary=return_result_device, overlaps="commands,executionDevices")
+    home: Mapped[Home] = relationship("Home", back_populates="return_device") 
+    deviceType: Mapped[DeviceType] = relationship("DeviceType", back_populates="return_device")
+    commands: Mapped[List["Command"]] = relationship("Command", secondary=command_devices)
+    returnResults: Mapped[List["DeviceValueFormat"]] = relationship("DeviceValueFormat", secondary=return_result_device)
 
 class ExecutionDevice(Base):
     __tablename__ = 'execution_device'
@@ -109,9 +109,9 @@ class ExecutionDevice(Base):
     type_id: Mapped[int] = mapped_column(Integer, ForeignKey("device_type.id"))
     home_id: Mapped[int] = mapped_column(Integer, ForeignKey("home.id"))
 
-    deviceType: Mapped[DeviceType] = relationship("DeviceType", back_populates="executionDevices")
-    home: Mapped[Home] = relationship("Home", back_populates="executionDevices")
-    commands: Mapped[List["Command"]] = relationship(secondary=command_devices, overlaps="commands, returnDevices")
+    deviceType: Mapped[DeviceType] = relationship("DeviceType", back_populates="execution_device")
+    home: Mapped[Home] = relationship("Home", back_populates="execution_device")
+    commands: Mapped[List["Command"]] = relationship("Command", secondary=command_devices)
 
 
 class DeviceValueFormat(Base):
@@ -124,7 +124,7 @@ class DeviceValueFormat(Base):
     textValue: Mapped[str] = mapped_column(String(64), nullable=True)
     floatValue: Mapped[float] = mapped_column(Float, nullable=True)
 
-    returnDevices: Mapped[List["ReturnDevice"]] = relationship(secondary=return_result_device, overlaps="returnResults")
+    returnDevices: Mapped[List["ReturnDevice"]] = relationship("ReturnDevice", secondary=return_result_device)
 
 class Command(Base):
     __tablename__ = 'command'
@@ -135,7 +135,5 @@ class Command(Base):
     command: Mapped[str] = mapped_column(String(32))
     description: Mapped[str] = mapped_column(Text)
 
-    returnDevices: Mapped[List["ReturnDevice"]] = relationship(secondary=command_devices, overlaps="commands,executionDevices")
-    executionDevices: Mapped[List['ExecutionDevice']] = relationship(secondary=command_devices, overlaps="commands,returnDevices")
-
-Base.registry.configure()
+    returnDevices: Mapped[List["ReturnDevice"]] = relationship("ReturnDevice", secondary=command_devices)
+    executionDevices: Mapped[List['ExecutionDevice']] = relationship("ExecutionDevice", secondary=command_devices)
